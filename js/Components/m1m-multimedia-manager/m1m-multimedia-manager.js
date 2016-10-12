@@ -21,6 +21,7 @@ function controller($scope, CommService) {
         CommService.browse( mediaServerId, directoryId ).then( function(data) {
             console.log( "Browse", mediaServerId, directoryId, "=>", data );
             ctrl.directories = data.directories;
+            ctrl.medias      = data.medias;
             $scope.$applyAsync();
         });
     }

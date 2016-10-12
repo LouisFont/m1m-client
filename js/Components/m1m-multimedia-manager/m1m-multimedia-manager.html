@@ -1,29 +1,48 @@
-<h2>{{$ctrl.title}}</h2>
-<section>
-    <h3>Liste des lecteurs UPnP/DLNA</h3>
-    <ul>
-        <li ng-repeat="renderer in $ctrl.mediaRenderers">
-            <details>
-                <summary>{{renderer.name}}</summary>
-                {{renderer | json}}
-            </details>
-        </li>
-    </ul>
-</section>
+<m1m-media data="$ctrl.medias"></m1m-media>
 
-<section>
-    <h3>Liste des serveurs UPnP/DLNA</h3>
-    <ul>
-        <li ng-repeat="server in $ctrl.mediaServers">
-            <details>
-                <summary>{{server.name}}</summary>
-                <p ng-dblclick="$ctrl.browse(server.id)">
-                    {{server | json}}
-                </p>
-                <a ng-repeat="obj in $ctrl.directories" ng-dblclick="$ctrl.browse(server.id, obj.directory)">
-                    {{obj.name}}
-                </a>
-            </details>
-        </li>
-    </ul>
-</section>
+
+<h2>{{$ctrl.title}}</h2>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Liste des lecteurs UPnP/DLNA</h3>
+        <div class="panel panel-default" ng-repeat="renderer in $ctrl.mediaRenderers">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span>
+                    <h3>{{renderer.name}}</h3>
+            </div>
+        </div>
+        <!-- <ul>
+            <li style="list-style-type : none" ng-repeat="renderer in $ctrl.mediaRenderers">
+                <details>
+                    <summary>{{renderer.name}}</summary>
+                    <pre>{{renderer | json}}</pre>
+                </details>
+            </li>
+        </ul> -->
+    </div>
+    <div class="col-md-6">
+        <h3>Liste des serveurs UPnP/DLNA</h3>
+        <div class="panel panel-default" ng-repeat="server in $ctrl.mediaServers">
+          <div class="panel-heading">
+            <h3 class="panel-title"><span class="glyphicon glyphicon-hdd" aria-hidden="true"></span> {{server.name}}</h3>
+          </div>
+          <div class="panel-body">
+            <a ng-click="$ctrl.browse(server.id)" class="btn btn-primary" role="button">Browse</a>
+            <a class="btn btn-default" ng-repeat="obj in $ctrl.directories" ng-click="$ctrl.browse(server.id, obj.directory)">
+                {{obj.name}}
+            </a> 
+          </div>
+        </div>
+        <!-- <ul>
+            <li style="list-style-type : none" ng-repeat="server in $ctrl.mediaServers">
+                <details>
+                    <summary>{{server.name}}</summary>
+                    <pre ng-dblclick="$ctrl.browse(server.id)">{{server | json}}</pre>
+                    <a ng-repeat="obj in $ctrl.directories" ng-dblclick="$ctrl.browse(server.id, obj.directory)">
+                        {{obj.name}}
+                    </a>
+                </details>
+            </li>
+        </ul> -->
+    </div>
+</div>

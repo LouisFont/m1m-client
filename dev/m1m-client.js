@@ -55,11 +55,12 @@
 	__webpack_require__( 6 );
 
 	var angular						= __webpack_require__( 8 ),
-		m1mClientMultimediaModule	= __webpack_require__( 10 )
+		m1mClientMultimediaModule	= __webpack_require__( 10 ),
+		m1mClientMediaModule		= __webpack_require__( 69 )
 		;
 
-	angular	.module( "m1m-client-Module", [m1mClientMultimediaModule] );
-
+	angular	.module( "m1m-client-Module", [m1mClientMultimediaModule,m1mClientMediaModule] );
+	 
 
 /***/ },
 /* 2 */
@@ -31885,6 +31886,7 @@
 	        CommService.browse( mediaServerId, directoryId ).then( function(data) {
 	            console.log( "Browse", mediaServerId, directoryId, "=>", data );
 	            ctrl.directories = data.directories;
+	            ctrl.medias      = data.medias;
 	            $scope.$applyAsync();
 	        });
 	    }
@@ -77916,7 +77918,40 @@
 /* 68 */
 /***/ function(module, exports) {
 
-	module.exports = "<h2>{{$ctrl.title}}</h2>\n<section>\n    <h3>Liste des lecteurs UPnP/DLNA</h3>\n    <ul>\n        <li ng-repeat=\"renderer in $ctrl.mediaRenderers\">\n            <details>\n                <summary>{{renderer.name}}</summary>\n                {{renderer | json}}\n            </details>\n        </li>\n    </ul>\n</section>\n\n<section>\n    <h3>Liste des serveurs UPnP/DLNA</h3>\n    <ul>\n        <li ng-repeat=\"server in $ctrl.mediaServers\">\n            <details>\n                <summary>{{server.name}}</summary>\n                <p ng-dblclick=\"$ctrl.browse(server.id)\">\n                    {{server | json}}\n                </p>\n                <a ng-repeat=\"obj in $ctrl.directories\" ng-dblclick=\"$ctrl.browse(server.id, obj.directory)\">\n                    {{obj.name}}\n                </a>\n            </details>\n        </li>\n    </ul>\n</section>"
+	module.exports = "<m1m-media data=\"$ctrl.medias\"></m1m-media>\n\n\n<h2>{{$ctrl.title}}</h2>\n<div class=\"row\">\n    <div class=\"col-md-6\">\n        <h3>Liste des lecteurs UPnP/DLNA</h3>\n        <div class=\"panel panel-default\" ng-repeat=\"renderer in $ctrl.mediaRenderers\">\n            <div class=\"panel-heading\">\n                <span class=\"glyphicon glyphicon-blackboard\" aria-hidden=\"true\"></span>\n                    <h3>{{renderer.name}}</h3>\n            </div>\n        </div>\n        <!-- <ul>\n            <li style=\"list-style-type : none\" ng-repeat=\"renderer in $ctrl.mediaRenderers\">\n                <details>\n                    <summary>{{renderer.name}}</summary>\n                    <pre>{{renderer | json}}</pre>\n                </details>\n            </li>\n        </ul> -->\n    </div>\n    <div class=\"col-md-6\">\n        <h3>Liste des serveurs UPnP/DLNA</h3>\n        <div class=\"panel panel-default\" ng-repeat=\"server in $ctrl.mediaServers\">\n          <div class=\"panel-heading\">\n            <h3 class=\"panel-title\"><span class=\"glyphicon glyphicon-hdd\" aria-hidden=\"true\"></span> {{server.name}}</h3>\n          </div>\n          <div class=\"panel-body\">\n            <a ng-click=\"$ctrl.browse(server.id)\" class=\"btn btn-primary\" role=\"button\">Browse</a>\n            <a class=\"btn btn-default\" ng-repeat=\"obj in $ctrl.directories\" ng-click=\"$ctrl.browse(server.id, obj.directory)\">\n                {{obj.name}}\n            </a> \n          </div>\n        </div>\n        <!-- <ul>\n            <li style=\"list-style-type : none\" ng-repeat=\"server in $ctrl.mediaServers\">\n                <details>\n                    <summary>{{server.name}}</summary>\n                    <pre ng-dblclick=\"$ctrl.browse(server.id)\">{{server | json}}</pre>\n                    <a ng-repeat=\"obj in $ctrl.directories\" ng-dblclick=\"$ctrl.browse(server.id, obj.directory)\">\n                        {{obj.name}}\n                    </a>\n                </details>\n            </li>\n        </ul> -->\n    </div>\n</div>"
+
+/***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var angular		        = __webpack_require__( 8 ),
+	    CommModule          = __webpack_require__( 11 ),
+	    angularMaterial		= __webpack_require__( 61 ),
+	    template            = __webpack_require__( 70 )
+	    ;
+	module.exports = "m1m-media-Module";
+
+	console.log( "Init of m1m-media-Module", CommModule, angularMaterial);
+
+	function controller($scope, CommService) {
+	    var ctrl = this;
+	    console.log( "m1mMedia:", $scope, CommService );
+	}
+	controller.$inject = ["$scope", "CommService"];
+
+	angular .module     ( module.exports, [CommModule, angularMaterial] )
+	        .component  ( "m1mMedia", {
+	            controller  : controller,
+	            bindings    : {data: "<"},
+	            template	: template
+	        });
+
+
+/***/ },
+/* 70 */
+/***/ function(module, exports) {
+
+	module.exports = "<div ng-show=\"$ctrl.data && $ctrl.data.length\" class=\"panel panel-default\">\n  <div class=\"panel-heading\">\n    <h3 class=\"panel-title\">Liste des médias</h3>\n  </div>\n  <div class=\"panel-body\">\n    <div ng-repeat=\"media in $ctrl.data\">\n    \t<h3>{{media.title}}</h3>\n    </div>\n  </div>\n</div>"
 
 /***/ }
 /******/ ]);
