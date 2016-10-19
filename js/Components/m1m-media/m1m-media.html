@@ -3,8 +3,10 @@
     <h3 class="panel-title">Liste des médias</h3>
   </div>
   <div class="panel-body">
-    <div ng-repeat="media in $ctrl.data">
-    	<h3>{{media.title}}</h3>
-    </div>
+  	<ul>
+		<li ng-repeat="media in $ctrl.data">
+			<h3>{{media.title}}</h3>
+		</li>
+	</ul>
   </div>
 </div>
