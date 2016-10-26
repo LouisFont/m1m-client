@@ -60,6 +60,9 @@ var serviceComm = {
     setVolume   : function(mediaRendererId, volume) {
         return utils.call(mediaRendererId, "setVolume", [volume]);
     },
+    getMediasStates : function(mediaRendererId) {
+        return utils.call(mediaRendererId,"getMediasStates",[]).then(function(data){ return data; });
+    },
     loadMedia   : function(mediaRendererId, mediaServerId, itemId) {
         return utils.call(mediaRendererId, "loadMedia", [mediaServerId, itemId]);
     },

@@ -1,0 +1,31 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span> {{$ctrl.renderer.name}}</h3>
+    </div>
+    <div class="panel-body">
+        <a ng-click="$ctrl.play($ctrl.renderer.id)" class="btn btn-default" role="button"> 
+            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+        </a>
+        <a ng-click="$ctrl.pause($ctrl.renderer.id)" class="btn btn-default" role="button">
+            <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+        </a>
+        <a ng-click="$ctrl.stop($ctrl.renderer.id)" class="btn btn-default" role="button">
+            <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+        </a>
+        <div><br/></div>
+        <div class="row">
+            <div class="col-xs-2">
+                <a class="btn btn-xs" ng-click="$ctrl.setVolume($ctrl.renderer.id,0)"><span class="glyphicon glyphicon-volume-{{volume.value>0 ? 'up' : 'off'}}" aria-hidden="true"></span></a>
+            </div>
+            <div class="col-xs-6">
+                <input type="range" min="0" max="100" step="5" ng-model="volume.value" ng-change="$ctrl.setVolume($ctrl.renderer.id,volume.value)"/> 
+            </div>
+            <div class="col-xs-2">
+                {{volume.value}}
+            </div>
+        </div>
+        
+        <pre ng-init="$ctrl.getMediasStates($ctrl.renderer.id)">{{$ctrl.states}}</pre>
+
+    </div>
+</div>

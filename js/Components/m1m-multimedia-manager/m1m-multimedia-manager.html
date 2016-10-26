@@ -1,21 +1,10 @@
-<m1m-media data="$ctrl.medias"></m1m-media>
+<m1m-media data="$ctrl.medias" renderers="$ctrl.mediaRenderers"></m1m-media>
 
-
-<h2>{{$ctrl.title}}</h2>
+<center><h1>{{$ctrl.title}}</h1></center>
 <div class="row">
     <div class="col-md-6">
         <h3>Liste des lecteurs UPnP/DLNA</h3>
-        <div class="panel panel-default" ng-repeat="renderer in $ctrl.mediaRenderers">
-            <div class="panel-heading">
-                <h3 class="panel-title"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span> {{renderer.name}}</h3>
-            </div>
-            <div class="panel-body">
-                <p>Current media</p> <!-- A CHANGER -->
-                <a ng-click="$ctrl.play(server.id)" class="btn btn-default" role="button"> <!-- A VERIFIER --> 
-                    <span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span>
-                </a>
-            </div>
-        </div>
+        <m1m-renderer ng-repeat="renderer in $ctrl.mediaRenderers" renderer="renderer"></m1m-renderer>
         <!-- <ul>
             <li style="list-style-type : none" ng-repeat="renderer in $ctrl.mediaRenderers">
                 <details>

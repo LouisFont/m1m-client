@@ -56,10 +56,11 @@
 
 	var angular						= __webpack_require__( 8 ),
 		m1mClientMultimediaModule	= __webpack_require__( 10 ),
-		m1mClientMediaModule		= __webpack_require__( 69 )
+		m1mClientMediaModule		= __webpack_require__( 69 ),
+		m1mClientRendererModule		= __webpack_require__( 71 )
 		;
 
-	angular	.module( "m1m-client-Module", [m1mClientMultimediaModule,m1mClientMediaModule] );
+	angular	.module( "m1m-client-Module", [m1mClientMultimediaModule,m1mClientMediaModule,m1mClientRendererModule] );
 	 
 
 /***/ },
@@ -31966,6 +31967,9 @@
 	    },
 	    setVolume   : function(mediaRendererId, volume) {
 	        return utils.call(mediaRendererId, "setVolume", [volume]);
+	    },
+	    getMediasStates : function(mediaRendererId) {
+	        return utils.call(mediaRendererId,"getMediasStates",[]).then(function(data){ return data; });
 	    },
 	    loadMedia   : function(mediaRendererId, mediaServerId, itemId) {
 	        return utils.call(mediaRendererId, "loadMedia", [mediaServerId, itemId]);
@@ -77918,7 +77922,7 @@
 /* 68 */
 /***/ function(module, exports) {
 
-	module.exports = "<m1m-media data=\"$ctrl.medias\"></m1m-media>\n\n\n<h2>{{$ctrl.title}}</h2>\n<div class=\"row\">\n    <div class=\"col-md-6\">\n        <h3>Liste des lecteurs UPnP/DLNA</h3>\n        <div class=\"panel panel-default\" ng-repeat=\"renderer in $ctrl.mediaRenderers\">\n            <div class=\"panel-heading\">\n                <h3 class=\"panel-title\"><span class=\"glyphicon glyphicon-blackboard\" aria-hidden=\"true\"></span> {{renderer.name}}</h3>\n            </div>\n            <div class=\"panel-body\">\n                <p>Current media</p> <!-- A CHANGER -->\n                <a ng-click=\"$ctrl.play(server.id)\" class=\"btn btn-default\" role=\"button\"> <!-- A VERIFIER --> \n                    <span class=\"glyphicon glyphicon-blackboard\" aria-hidden=\"true\"></span>\n                </a>\n            </div>\n        </div>\n        <!-- <ul>\n            <li style=\"list-style-type : none\" ng-repeat=\"renderer in $ctrl.mediaRenderers\">\n                <details>\n                    <summary>{{renderer.name}}</summary>\n                    <pre>{{renderer | json}}</pre>\n                </details>\n            </li>\n        </ul> -->\n    </div>\n    <div class=\"col-md-6\">\n        <h3>Liste des serveurs UPnP/DLNA</h3>\n        <div class=\"panel panel-default\" ng-repeat=\"server in $ctrl.mediaServers\">\n          <div class=\"panel-heading\">\n            <h3 class=\"panel-title\"><span class=\"glyphicon glyphicon-hdd\" aria-hidden=\"true\"></span> {{server.name}}</h3>\n          </div>\n          <div class=\"panel-body\">\n            <a ng-click=\"$ctrl.browse(server.id)\" class=\"btn btn-primary\" role=\"button\">Browse</a>\n            <a class=\"btn btn-default\" ng-repeat=\"obj in $ctrl.directories\" ng-click=\"$ctrl.browse(server.id, obj.directory)\">\n                {{obj.name}}\n            </a> \n          </div>\n        </div>\n        <!-- <ul>\n            <li style=\"list-style-type : none\" ng-repeat=\"server in $ctrl.mediaServers\">\n                <details>\n                    <summary>{{server.name}}</summary>\n                    <pre ng-dblclick=\"$ctrl.browse(server.id)\">{{server | json}}</pre>\n                    <a ng-repeat=\"obj in $ctrl.directories\" ng-dblclick=\"$ctrl.browse(server.id, obj.directory)\">\n                        {{obj.name}}\n                    </a>\n                </details>\n            </li>\n        </ul> -->\n    </div>\n</div>"
+	module.exports = "<m1m-media data=\"$ctrl.medias\" renderers=\"$ctrl.mediaRenderers\"></m1m-media>\n\n<center><h1>{{$ctrl.title}}</h1></center>\n<div class=\"row\">\n    <div class=\"col-md-6\">\n        <h3>Liste des lecteurs UPnP/DLNA</h3>\n        <m1m-renderer ng-repeat=\"renderer in $ctrl.mediaRenderers\" renderer=\"renderer\"></m1m-renderer>\n        <!-- <ul>\n            <li style=\"list-style-type : none\" ng-repeat=\"renderer in $ctrl.mediaRenderers\">\n                <details>\n                    <summary>{{renderer.name}}</summary>\n                    <pre>{{renderer | json}}</pre>\n                </details>\n            </li>\n        </ul> -->\n    </div>\n    <div class=\"col-md-6\">\n        <h3>Liste des serveurs UPnP/DLNA</h3>\n        <div class=\"panel panel-default\" ng-repeat=\"server in $ctrl.mediaServers\">\n          <div class=\"panel-heading\">\n            <h3 class=\"panel-title\"><span class=\"glyphicon glyphicon-hdd\" aria-hidden=\"true\"></span> {{server.name}}</h3>\n          </div>\n          <div class=\"panel-body\">\n            <a ng-click=\"$ctrl.browse(server.id)\" class=\"btn btn-primary\" role=\"button\">Browse</a>\n            <a class=\"btn btn-default\" ng-repeat=\"obj in $ctrl.directories\" ng-click=\"$ctrl.browse(server.id, obj.directory)\">\n                {{obj.name}}\n            </a> \n          </div>\n        </div>\n        <!-- <ul>\n            <li style=\"list-style-type : none\" ng-repeat=\"server in $ctrl.mediaServers\">\n                <details>\n                    <summary>{{server.name}}</summary>\n                    <pre ng-dblclick=\"$ctrl.browse(server.id)\">{{server | json}}</pre>\n                    <a ng-repeat=\"obj in $ctrl.directories\" ng-dblclick=\"$ctrl.browse(server.id, obj.directory)\">\n                        {{obj.name}}\n                    </a>\n                </details>\n            </li>\n        </ul> -->\n    </div>\n</div>"
 
 /***/ },
 /* 69 */
@@ -77936,22 +77940,76 @@
 	function controller($scope, CommService) {
 	    var ctrl = this;
 	    console.log( "m1mMedia:", $scope, CommService );
+	    this.loadMedia = function(mediaRendererId, mediaServerId, itemId) {
+	        CommService.loadMedia(mediaRendererId, mediaServerId, itemId);
+	    }
 	}
 	controller.$inject = ["$scope", "CommService"];
 
 	angular .module     ( module.exports, [CommModule, angularMaterial] )
 	        .component  ( "m1mMedia", {
 	            controller  : controller,
-	            bindings    : {data: "<"},
+	            bindings    : {data: "<", renderers: "<"},
 	            template	: template
 	        });
-
 
 /***/ },
 /* 70 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-show=\"$ctrl.data && $ctrl.data.length\" class=\"panel panel-default\">\n  <div class=\"panel-heading\">\n    <h3 class=\"panel-title\">Liste des médias</h3>\n  </div>\n  <div class=\"panel-body\">\n  \t<ul>\n\t\t<li ng-repeat=\"media in $ctrl.data\">\n\t\t\t<h3>{{media.title}}</h3>\n\t\t</li>\n\t</ul>\n  </div>\n</div>"
+	module.exports = "<div ng-show=\"$ctrl.data && $ctrl.data.length\" class=\"panel panel-default\">\n  <div class=\"panel-heading\">\n    <h3 class=\"panel-title\">Liste des médias</h3>\n  </div>\n  <div class=\"panel-body\">\n  \t<ul>\n\t\t<li ng-repeat=\"media in $ctrl.data\">\n      <pre>{{media}}</pre>\n\t\t\t<h3>{{media.title}}</h3>\n      <div class=\"input-group\">\n        <input type=\"text\" class=\"form-control\" list=\"medias\" ng-model=\"selection.renderer\" />\n        <datalist id=medias >\n           <option ng-repeat=\"renderer in $ctrl.renderers\" value=\"{{renderer.id}}\">{{renderer.name}}</option>\n        </datalist>\n        <a class=\"btn btn-primary input-group-addon\" ng-click=\"$ctrl.loadMedia(selection.renderer, media.serverId, media.mediaId)\">Envoyer</a>\n      </div>\n\t\t</li>\n\t</ul>\n  </div>\n</div>"
+
+/***/ },
+/* 71 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var angular		        = __webpack_require__( 8 ),
+	    CommModule          = __webpack_require__( 11 ),
+	    angularMaterial		= __webpack_require__( 61 ),
+	    template            = __webpack_require__( 72 )
+	    ;
+	module.exports = "m1m-renderer-Module";
+
+	console.log( "Init of m1m-renderer-Module", CommModule, angularMaterial);
+
+	function controller($scope, CommService) {
+	    var ctrl = this;
+
+	    this.play = function(mediaRendererId){
+	        CommService.play(mediaRendererId);
+	    }
+	    this.pause = function(mediaRendererId){
+	        CommService.pause(mediaRendererId);
+	    }
+	    this.stop = function(mediaRendererId){
+	        CommService.stop(mediaRendererId);
+	    }
+	    this.setVolume = function(mediaRendererId, volume){
+	        CommService.setVolume(mediaRendererId, volume);
+	    }
+	    this.getMediasStates = function(mediaRendererId){
+	        console.log( "getMediasStates", mediaRendererId );
+	        CommService.getMediasStates(mediaRendererId).then(function(data){
+	            ctrl.states = data;
+	            $scope.$applyAsync();
+	        });
+	    }
+	}
+	controller.$inject = ["$scope", "CommService"];
+
+	angular .module     ( module.exports, [CommModule, angularMaterial] )
+	        .component  ( "m1mRenderer", {
+	            controller  : controller,
+	            bindings    : {renderer: "<"},
+	            template	: template
+	        });
+
+
+/***/ },
+/* 72 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"panel panel-default\">\n    <div class=\"panel-heading\">\n        <h3 class=\"panel-title\"><span class=\"glyphicon glyphicon-blackboard\" aria-hidden=\"true\"></span> {{$ctrl.renderer.name}}</h3>\n    </div>\n    <div class=\"panel-body\">\n        <a ng-click=\"$ctrl.play($ctrl.renderer.id)\" class=\"btn btn-default\" role=\"button\"> \n            <span class=\"glyphicon glyphicon-play\" aria-hidden=\"true\"></span>\n        </a>\n        <a ng-click=\"$ctrl.pause($ctrl.renderer.id)\" class=\"btn btn-default\" role=\"button\">\n            <span class=\"glyphicon glyphicon-pause\" aria-hidden=\"true\"></span>\n        </a>\n        <a ng-click=\"$ctrl.stop($ctrl.renderer.id)\" class=\"btn btn-default\" role=\"button\">\n            <span class=\"glyphicon glyphicon-stop\" aria-hidden=\"true\"></span>\n        </a>\n        <div><br/></div>\n        <div class=\"row\">\n            <div class=\"col-xs-2\">\n                <a class=\"btn btn-xs\" ng-click=\"$ctrl.setVolume($ctrl.renderer.id,0)\"><span class=\"glyphicon glyphicon-volume-{{volume.value>0 ? 'up' : 'off'}}\" aria-hidden=\"true\"></span></a>\n            </div>\n            <div class=\"col-xs-6\">\n                <input type=\"range\" min=\"0\" max=\"100\" step=\"5\" ng-model=\"volume.value\" ng-change=\"$ctrl.setVolume($ctrl.renderer.id,volume.value)\"/> \n            </div>\n            <div class=\"col-xs-2\">\n                {{volume.value}}\n            </div>\n        </div>\n        \n        <pre ng-init=\"$ctrl.getMediasStates($ctrl.renderer.id)\">{{$ctrl.states}}</pre>\n\n    </div>\n</div>"
 
 /***/ }
 /******/ ]);

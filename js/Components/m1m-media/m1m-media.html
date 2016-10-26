@@ -5,7 +5,15 @@
   <div class="panel-body">
   	<ul>
 		<li ng-repeat="media in $ctrl.data">
+      <pre>{{media}}</pre>
 			<h3>{{media.title}}</h3>
+      <div class="input-group">
+        <input type="text" class="form-control" list="medias" ng-model="selection.renderer" />
+        <datalist id=medias >
+           <option ng-repeat="renderer in $ctrl.renderers" value="{{renderer.id}}">{{renderer.name}}</option>
+        </datalist>
+        <a class="btn btn-primary input-group-addon" ng-click="$ctrl.loadMedia(selection.renderer, media.serverId, media.mediaId)">Envoyer</a>
+      </div>
 		</li>
 	</ul>
   </div>
